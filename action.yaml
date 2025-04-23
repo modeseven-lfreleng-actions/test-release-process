@@ -52,8 +52,6 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
       with:
         token: ${{ inputs.token }}
-        # Test in my fork first
-        push-to-fork: modeseven-lfreleng-actions/test-release-process
         commit-message: ${{ env.date }}
         signoff: 'true'
         sign-commits: 'true'
