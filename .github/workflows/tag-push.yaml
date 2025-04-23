@@ -1,0 +1,73 @@
+---
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 The Linux Foundation
+
+# Validates pushed tags, promotes draft release
+name: 'Release Process Test 🚀'
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    tags:
+      # No tag restrictions; permit both SemVer/CalVer
+      - '**'
+
+permissions: {}
+
+jobs:
+  update-release:
+    name: 'Create/Update Draft Release'
+    permissions:
+      # write permission is required to create releases
+      contents: write
+      # write permission is required for autolabeler
+      pull-requests: write
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 5
+    steps:
+      - name: 'Harden runner 🔒'
+        # yamllint disable-line rule:line-length
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: 'Create/Update Draft Release'
+        # yamllint disable-line rule:line-length
+        uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  check-trigger:
+    name: 'Release Process Test'
+    needs: update-release
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: write
+    timeout-minutes: 5
+    steps:
+      - name: 'Harden runner 🔒'
+        # yamllint disable-line rule:line-length
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      # yamllint disable-line rule:line-length
+      - name: 'Checkout local repository ☑️'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: 'Verify pushed tag 🏷️'
+        id: tag-verify
+        # yamllint disable-line rule:line-length
+        uses: lfreleng-actions/tag-push-verify-action@f9c6e753870c6405883be2ba18af05d075aaffe8 # v0.1.0
+        with:
+          versioning: 'semver'
+          exit_on_fail: true
+
+      - name: 'Promote draft release ⬆️'
+        # yamllint disable-line rule:line-length
+        uses: modeseven-lfreleng-actions/draft-release-promote-action@outputs-formatting # Testing
+        # yamllint disable-line rule:line-length
+        # uses: lfreleng-actions/draft-release-promote-action@73f2a2b411e43013c3c92563319e0d7b643d8a55 # v0.1.0
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          tag: "${{ steps.tag-verify.outputs.tag }}"
