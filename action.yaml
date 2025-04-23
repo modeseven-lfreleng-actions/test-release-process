@@ -28,23 +28,23 @@ runs:
         echo "Writing date to file: $date > date.txt"
         echo "$date" > date.txt
 
-    - name: 'Detect change'
+    - name: 'Detect change 🔍'
       id: detect
       shell: bash
       run: |
         # Detect repository changes
         if [[ `git status --porcelain` ]]; then
-          echo "changes=true" >> $GITHUB_ENV
+          echo "changes=true" >> "$GITHUB_OUTPUT"
           echo '# Generating Pull Request' >> "$GITHUB_STEP_SUMMARY"
           echo 'Generating Pull Request'
           echo 'Changes made to repository ✅' >> "$GITHUB_STEP_SUMMARY"
           echo 'Changes made to repository ✅'
         else
-          echo "changes=false" >> $GITHUB_ENV
+          echo "changes=true" >> "$GITHUB_OUTPUT"
           echo 'No changes made to repository 💬'
         fi
 
-    - name: 'Raise Pull Request'
+    - name: 'Raise Pull Request ⬇️'
       if: steps.detect.outputs.changes == 'true'
       # yamllint disable rule:line-length
       uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
