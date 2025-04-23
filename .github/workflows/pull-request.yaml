@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: 2025 The Linux Foundation
 
 # Runs on a tag push event
-name: "Generate Pull Request"
+name: "Generate Pull Request ⬇️"
 
 # yamllint disable-line rule:truthy
 on:
@@ -14,8 +14,8 @@ on:
 permissions: {}
 
 jobs:
-  generate-change:
-    name: 'Generate Change'
+  generate-pr:
+    name: 'Generate Pull Request ⬇️'
     runs-on: "ubuntu-24.04"
     permissions:
       # write permission is required to create a github release
@@ -38,7 +38,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # List pull requests with label/search
-          gh pr list -l 'automated-pr'
+          request=$(gh pr list -l 'automated-pr')
+          echo "$request 💬"
 
       - name: "Running local action: ${{ github.repository }}"
         uses: ./
