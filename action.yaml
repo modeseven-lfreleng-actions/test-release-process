@@ -53,9 +53,7 @@ runs:
       with:
         token: ${{ inputs.token }}
         # Test in my fork first
-        repository: modeseven-lfreleng-actions/test-release-process
-        # Possible alternative approaches: peter-evans/create-pull-request
-        # push-to-fork:
+        push-to-fork: modeseven-lfreleng-actions/test-release-process
         commit-message: ${{ env.date }}
         signoff: 'true'
         sign-commits: 'true'
