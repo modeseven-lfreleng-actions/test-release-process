@@ -1,0 +1,44 @@
+---
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 The Linux Foundation
+
+# Runs on a tag push event
+name: "Generate Pull Request"
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "40 6 * * 0"
+
+permissions: {}
+
+jobs:
+  generate-change:
+    name: 'Generate Change'
+    runs-on: "ubuntu-24.04"
+    permissions:
+      # write permission is required to create a github release
+      contents: write
+      # write permission is required for autolabeler
+      # otherwise, read permission is required at least
+      pull-requests: write
+    steps:
+      # Harden the runner used by this workflow
+      # yamllint disable-line rule:line-length
+      - uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      # yamllint disable-line rule:line-length
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: "List pull requests with label/search"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr list -l automated-pr || true
+
+      - name: "Running local action: ${{ github.repository }}"
+        uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
