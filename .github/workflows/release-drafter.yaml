@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 The Linux Foundation
 # SPDX-License-Identifier: Apache-2.0
 
-name: Release Drafter
+name: 'Release Drafter '
 
 # yamllint disable-line rule:truthy
 on:
@@ -22,16 +22,26 @@ on:
       - synchronize
       - reopened
 
+permissions: {}
+
 jobs:
-  update_release_draft:
+  update-release:
     permissions:
       # write permission is required to create releases
       contents: write
       # write permission is required for autolabeler
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 5
     steps:
-      # yamllint disable-line rule:line-length
-      - uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
+      - name: 'Harden runner 🔒'
+        # yamllint disable-line rule:line-length
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: 'Create/Update draft release'
+        # yamllint disable-line rule:line-length
+        uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
