@@ -46,17 +46,20 @@ runs:
 
     - name: 'Raise Pull Request'
       if: steps.detect.outputs.changes == 'true'
-      id: raise-change
       # yamllint disable rule:line-length
       uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       with:
         token: ${{ inputs.token }}
+        # Test in my fork first
+        repository: modeseven-lfreleng-actions/test-release-process
+        # Possible alternative approaches: peter-evans/create-pull-request
+        # push-to-fork:
         commit-message: ${{ env.date }}
         signoff: 'true'
         sign-commits: 'true'
-        branch: auto-pr
+        branch: automated-pr
         delete-branch: true
         title: ${{ env.date }}
         body: |
