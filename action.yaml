@@ -9,7 +9,7 @@ description: 'Generates a pull request'
 inputs:
   token:
     description: 'Github token with the required permissions'
-    type: 'string'
+    # type: 'string'
     required: true
 
 runs:
