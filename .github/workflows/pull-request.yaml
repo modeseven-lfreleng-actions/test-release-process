@@ -77,7 +77,7 @@ jobs:
           fi
 
       - name: "Running local action: ${{ github.repository }} 🔨"
-        uses: ./
+        uses: $/
         with:
           # yamllint disable-line rule:line-length
           token: "${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}"
